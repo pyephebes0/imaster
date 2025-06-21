@@ -21,16 +21,17 @@
     window.location.href = 'https://imaster-server.onrender.com/twitter/auth';
   }
 
-  async function revokeAccount(userId) {
+  async function revokeAccount(twitterUserId) {
     if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเชื่อมบัญชีนี้?')) return;
 
     try {
-      const res = await fetch(`https://imaster-server.onrender.com/twitter/account/${userId}`, {
+      const res = await fetch(`https://imaster-server.onrender.com/twitter/account/${twitterUserId}`, {
         method: 'DELETE',
+        credentials: 'include'
       });
 
       if (res.ok || res.status === 204) {
-        accounts = accounts.filter((acc) => acc.userId !== userId);
+        accounts = accounts.filter((acc) => acc.twitterUserId !== twitterUserId);
       } else {
         alert('ลบบัญชีไม่สำเร็จ');
       }
@@ -78,7 +79,7 @@
         <span>@{acc.username}</span>
         <div>
           <span class="badge bg-success me-2">เชื่อมแล้ว</span>
-          <button class="btn btn-sm btn-outline-danger" on:click={() => revokeAccount(acc.userId)}>
+          <button class="btn btn-sm btn-outline-danger" on:click={() => revokeAccount(acc.twitterUserId)}>
             ยกเลิก
           </button>
         </div>
