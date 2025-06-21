@@ -1,17 +1,15 @@
+// $lib/server/auth.js
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config(); // 🔥 สำคัญมาก!
 
 const SECRET = process.env.JWT_SECRET;
 
 export function createToken(user) {
-  return jwt.sign({ id: user._id, username: user.username }, SECRET, { expiresIn: '7d' });
-}
+  if (!SECRET) throw new Error('JWT_SECRET is not set');
 
-export function verifyToken(token) {
-  try {
-    return jwt.verify(token, SECRET);
-  } catch {
-    return null;
-  }
+  const payload = {
+    userId: user._id.toString(),
+    username: user.username
+  };
+
+  return jwt.sign(payload, SECRET, { expiresIn: '7d' });
 }
