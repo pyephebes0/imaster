@@ -25,4 +25,4 @@ const userSchema = new mongoose.Schema({
 });
 
 // ✅ ใช้ชื่อ model ว่า 'User' ไม่ควรใช้ 'Users'
-export const User = mongoose.models.User || mongoose.model('Users', userSchema);
+export const User = mongoose.models.User || mongoose.model('User', userSchema);
