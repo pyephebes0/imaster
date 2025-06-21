@@ -4,7 +4,7 @@
 
   async function fetchAccounts() {
     try {
-      const res = await fetch('http://localhost:3000/twitter/accounts', {
+      const res = await fetch('https://imaster-server.onrender.com/twitter/accounts', {
         credentials: 'include',
       });
       if (res.ok) {
@@ -18,14 +18,14 @@
   }
 
   function connectTwitter() {
-    window.location.href = 'http://localhost:3000/twitter/auth';
+    window.location.href = 'https://imaster-server.onrender.com/twitter/auth';
   }
 
   async function revokeAccount(userId) {
     if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเชื่อมบัญชีนี้?')) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/twitter/account/${userId}`, {
+      const res = await fetch(`https://imaster-server.onrender.com/twitter/account/${userId}`, {
         method: 'DELETE',
       });
 
