@@ -1,7 +1,7 @@
 <main>
   <h1>ยินดีต้อนรับสู่ iMaster</h1>
   <p>โปรแกรมโพสต์ออโต้ Twitter ที่ช่วยให้คุณจัดการโพสต์ได้ง่ายและรวดเร็ว</p>
-  <a href="/login" class="button">เริ่มใช้งานเลย</a>
+  <a href="/signup" class="button">เริ่มใช้งานเลย</a>
 </main>
 
 <style>
