@@ -4,9 +4,9 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "concurrently \"vite dev\" \"node server.js\"",
-		"build": "vite build && node server.js",
-		"start": "node server.js",
+		"dev": "vite dev",
+		"build": "vite build",
+		"start": "node build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
