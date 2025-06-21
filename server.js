@@ -29,7 +29,7 @@ const TwitterAccountSchema = new mongoose.Schema({
 const TwitterAccount = mongoose.model('TwitterAccount', TwitterAccountSchema);
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: 'https://imaster.koyeb.app', credentials: true }));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
@@ -41,7 +41,7 @@ const client = new TwitterApi({
   clientSecret: process.env.TWITTER_CLIENT_SECRET,
 });
 
-const callbackURL = 'http://localhost:3000/twitter/callback';
+const callbackURL = 'https://imaster-server.onrender.com/twitter/callback';
 
 app.get('/test-session', (req, res) => {
   req.session.test = 'hello';
@@ -98,7 +98,7 @@ app.get('/twitter/callback', async (req, res) => {
     if (!req.session.twitterAccounts) req.session.twitterAccounts = [];
     req.session.twitterAccounts.push(twitterData);
 
-    res.redirect('http://localhost:5173/twitter/success');
+    res.redirect('https://imaster.koyeb.app/twitter/success');
   } catch (error) {
     console.error('OAuth failed', error);
     res.status(500).send('OAuth failed');
@@ -125,4 +125,4 @@ app.delete('/twitter/account/:userId', async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('✅ Backend listening on http://localhost:3000'));
+app.listen(3000, () => console.log('✅ Backend listening on https://imaster-server.onrender.com'));
