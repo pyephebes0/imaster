@@ -15,8 +15,14 @@ if (!mongoose.connection.readyState) {
   });
 }
 
-export const User = mongoose.models.User || mongoose.model('Users', new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String
-}));
+// ✅ แก้ตรงนี้: ตั้งชื่อ schema และเปิด timestamps
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+}, {
+  timestamps: true // ✅ สำคัญมาก
+});
+
+// ✅ ใช้ชื่อ model ว่า 'User' ไม่ควรใช้ 'Users'
+export const User = mongoose.models.User || mongoose.model('Users', userSchema);
