@@ -24,3 +24,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 package-copy.json
 static/uploads/1750562521921-69y8j10yyou.png
+*.png
+*.webp
