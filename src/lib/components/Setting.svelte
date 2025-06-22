@@ -46,11 +46,16 @@
 			const res = await fetch('/api/post/existing', { credentials: 'include' });
 			if (res.ok) {
 				const data = await res.json();
-				if (data) {
-					preview = data;
+				const post = data.post;
+
+				if (post) {
+					preview = post;
 					posted = true;
-					text = data.content || '';
-					selectTime = data.duration || '30';
+					text = post.content || '';
+					selectTime = post.duration || '30';
+				} else {
+					preview = null;
+					posted = false;
 				}
 			} else if (res.status === 204) {
 				preview = null;
