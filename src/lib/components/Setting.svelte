@@ -2,8 +2,15 @@
 	import { onMount } from 'svelte';
 
 	let text = ''; // ข้อความใน textarea
-	let selectTime = '1'; // เลือกระยะเวลาเริ่มต้น
+	let selectTime = '30'; // เลือกระยะเวลาเริ่มต้น
 	let imageFile = null; // เก็บไฟล์รูปภาพ
+
+	let loading = false; // สำหรับตอนโพสต์
+	let loadingPreview = true; // สำหรับตอนโหลดโพสต์เก่า (onMount)
+	let preview = null;
+	let error = '';
+	let posted = false;
+	let previewProcessing = true;
 
 	const baseUrl = import.meta.env.VITE_BASE_URL;
 	let accounts = [];
@@ -31,6 +38,32 @@
 		} catch (error) {
 			accounts = [];
 			console.error('Error fetching accounts:', error);
+		}
+	}
+
+	async function fetchExistingPost() {
+		try {
+			const res = await fetch('/api/post/existing', { credentials: 'include' });
+			if (res.ok) {
+				const data = await res.json();
+				if (data) {
+					preview = data;
+					posted = true;
+					text = data.content || '';
+					selectTime = data.duration || '30';
+				}
+			} else if (res.status === 204) {
+				preview = null;
+				posted = false;
+			} else {
+				preview = null;
+				posted = false;
+			}
+		} catch (e) {
+			console.error('Error fetching existing post:', e);
+			error = 'เกิดข้อผิดพลาดในการโหลดโพสต์เก่า';
+		} finally {
+			loadingPreview = false;
 		}
 	}
 
@@ -69,49 +102,132 @@
 		}
 	}
 
-	function submitForm() {
-		alert(
-			`ส่งข้อมูล:\nข้อความ: ${text}\nเวลา: ${selectTime} นาที\nรูปภาพ: ${imageFile ? imageFile.name : 'ไม่มี'}`
-		);
-		// เพิ่มโค้ดส่งข้อมูลจริง ๆ ได้ที่นี่
+	async function submitForm() {
+		loading = true;
+		error = '';
+
+		const formData = new FormData();
+		formData.append('content', text);
+		formData.append('duration', selectTime);
+		if (imageFile) formData.append('image', imageFile);
+
+		try {
+			const res = await fetch('/api/post', {
+				method: 'POST',
+				body: formData,
+				credentials: 'include'
+			});
+			if (!res.ok) {
+				error = await res.text();
+			} else {
+				preview = await res.json();
+				posted = true;
+			}
+		} catch (e) {
+			error = 'เกิดข้อผิดพลาดระหว่างการส่งโพสต์';
+		}
+		loading = false;
+	}
+
+	function cancelPost() {
+		text = '';
+		selectTime = '30';
+		imageFile = null;
+		preview = null;
+		posted = false;
 	}
 
 	onMount(() => {
 		fetchAccounts();
+		fetchExistingPost();
+
+		if (posted) {
+			// จำลองว่าระบบกำลังประมวลผล
+			setTimeout(() => {
+				previewProcessing = false;
+			}, 3000);
+		}
 	});
 </script>
 
 <main>
 	<h1>จัดการบัญชี Twitter ของคุณ</h1>
 
-	<!-- ฟอร์มตัวอย่าง -->
-	<form on:submit|preventDefault={submitForm}>
-		<label for="textInput">ข้อความ (ไม่เกิน 280 ตัวอักษร):</label>
-		<textarea
-			id="textInput"
-			bind:value={text}
-			on:input={autoResize}
-			maxlength="280"
-			placeholder="พิมพ์ข้อความที่นี่..."
-			rows="6"
-		></textarea>
+	{#if posted}
+		<button class="btn btn-danger mb-3" on:click={cancelPost}>โพสต์ใหม่</button>
+		<div class="preview-box border p-4 rounded bg-light position-relative">
+			<!-- Spinner Overlay ขณะประมวลผล -->
+			{#if previewProcessing}
+				<div class="overlay-spinner d-flex justify-content-center align-items-center">
+					<div class="text-center">
+						<div
+							class="spinner-border text-primary"
+							role="status"
+							style="width: 3rem; height: 3rem;"
+						></div>
+						<p class="mt-3">โพสต์ของคุณกำลังทำงาน...</p>
+					</div>
+				</div>
+			{/if}
 
-		<label for="selectTime">เลือกระยะเวลา:</label>
-		<select id="selectTime" bind:value={selectTime} required>
-			<option value="1">1 นาที</option>
-			<option value="3">3 นาที</option>
-			<option value="5">5 นาที</option>
-		</select>
+			<!-- ข้อมูลพรีวิว -->
+			<h4>🎉 โพสต์ของคุณ</h4>
+			<p><strong>ข้อความ:</strong> {preview.content}</p>
+			<p><strong>ระยะเวลา:</strong> {preview.duration} วินาที</p>
+			{#if preview.imageUrl}
+				<img
+					src={preview.imageUrl}
+					alt="รูปภาพ"
+					class="img-fluid mt-2"
+					style="max-width: 280px; max-height: 280px;"
+				/>
+			{/if}
+		</div>
+	{:else}
+		<!-- ฟอร์มโพสต์ -->
+		<form on:submit|preventDefault={submitForm} class="mb-5">
+			<label for="textInput">ข้อความ (ไม่เกิน 280 ตัวอักษร):</label>
+			<textarea
+				id="textInput"
+				bind:value={text}
+				on:input={autoResize}
+				maxlength="280"
+				placeholder="พิมพ์ข้อความที่นี่..."
+				rows="6"
+				class="form-control mb-3"
+			></textarea>
 
-		<label for="imageInput">เลือกรูปภาพ:</label>
-		<input id="imageInput" type="file" accept="image/*" on:change={handleFileChange} />
+			<label for="selectTime">เลือกระยะเวลา:</label>
+			<select id="selectTime" bind:value={selectTime} required class="form-select mb-3">
+				<option value="30">30 วินาที</option>
+				<option value="60">1 นาที</option>
+				<option value="180">3 นาที</option>
+			</select>
 
-		<button type="submit" class="btn btn-success mb-4" disabled={text.length === 0}>
-			โพสต์
-		</button>
-	</form>
+			<label for="imageInput">เลือกรูปภาพ:</label>
+			<input
+				id="imageInput"
+				type="file"
+				accept="image/*"
+				on:change={handleFileChange}
+				class="form-control mb-3"
+			/>
 
-	<button class="btn btn-primary mb-4" on:click={connectTwitter}>
+			<button type="submit" class="btn btn-success mb-4" disabled={text.length === 0 || loading}>
+				{#if loading}
+					<span class="spinner-border spinner-border-sm me-2"></span> กำลังโพสต์...
+				{:else}
+					โพสต์
+				{/if}
+			</button>
+
+			{#if error}
+				<p class="text-danger mt-2">{error}</p>
+			{/if}
+		</form>
+	{/if}
+
+	<button class="btn btn-primary mb-4" on:click={connectTwitter} style="margin-top: 2rem;">
 		<i class="bi bi-twitter me-2"></i> เชื่อมบัญชี Twitter ใหม่
 	</button>
 
@@ -125,7 +241,10 @@
 					<span>@{acc.username}</span>
 					<div>
 						<span class="badge bg-success me-2">เชื่อมแล้ว</span>
-						<button class="btn btn-sm btn-outline-danger" on:click={() => revokeAccount(acc.twitterUserId)}>
+						<button
+							class="btn btn-sm btn-outline-danger"
+							on:click={() => revokeAccount(acc.twitterUserId)}
+						>
 							ยกเลิก
 						</button>
 					</div>
@@ -138,7 +257,7 @@
 <style>
 	main {
 		max-width: 600px;
-		margin: 3rem auto 3rem;    /* top 3rem, ลดจาก 5rem */
+		margin: 3rem auto 3rem; /* top 3rem, ลดจาก 5rem */
 		padding: 2.5rem 2rem;
 		text-align: center;
 		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -151,7 +270,7 @@
 	}
 
 	h1 {
-		font-size: 2.5rem;         /* ลดจาก 3rem */
+		font-size: 2.5rem; /* ลดจาก 3rem */
 		margin-bottom: 1rem;
 		color: #2563eb;
 	}
@@ -217,5 +336,16 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.overlay-spinner {
+		position: absolute;
+		inset: 0;
+		background: rgba(255, 255, 255, 0.85);
+		z-index: 10;
+	}
+
+	form {
+		margin-bottom: 3rem;
 	}
 </style>

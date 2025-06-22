@@ -16,3 +16,27 @@ export function verifyToken(token) {
     return null;
   }
 }
+
+/** ฟังก์ชันตรวจสอบ user จาก request (cookie) */
+export async function authUser(request) {
+  // ดึง cookie จาก request header
+  const cookieHeader = request.headers.get('cookie');
+  if (!cookieHeader) return null;
+
+  // หา cookie ชื่อ jwt (หรือชื่อที่คุณตั้งไว้)
+  const match = cookieHeader.match(/jwt=([^;]+)/);
+  if (!match) return null;
+
+  const token = match[1];
+  const payload = verifyToken(token);
+  if (!payload) return null;
+
+  // สมมุติ payload = { id, username }
+  // ถ้าใช้ DB ให้ fetch user จาก id ด้วย
+  // เช่น
+  // const user = await User.findById(payload.id);
+  // return user;
+
+  // หรือถ้าไม่มี DB mock user object
+  return { _id: payload.id, username: payload.username };
+}
