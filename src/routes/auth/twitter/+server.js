@@ -14,7 +14,7 @@ const callbackUrl = process.env.TWITTER_CALLBACK_URL;
 
 export async function GET() {
   const { url, codeVerifier, state } = client.generateOAuth2AuthLink(callbackUrl, {
-    scope: ['tweet.read', 'users.read', 'offline.access']
+    scope: ['tweet.read', 'tweet.write', 'users.read', 'offline.access']
   });
 
   // ส่ง codeVerifier และ state ไปใน cookie
