@@ -45,6 +45,11 @@
 	}
 </script>
 
+<svelte:head>
+  <title>สมัครสมาชิก - iMaster</title>
+  <meta name="description" content="สมัครสมาชิกเพื่อใช้งานโปรแกรมโพสต์ออโต้ Twitter และเลือกแพ็กเกจเครดิต" />
+</svelte:head>
+
 <div class="container mt-5" style="max-width: 400px;">
 	<h2>Sign Up</h2>
 	<form on:submit={signup} novalidate>

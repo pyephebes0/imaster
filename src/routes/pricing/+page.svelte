@@ -34,11 +34,8 @@
 </script>
 
 <svelte:head>
-	<title>เลือกแพ็กเกจ</title>
-	<link
-		rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	/>
+  <title>เลือกแพ็กเกจ - iMaster</title>
+  <meta name="description" content="เลือกซื้อแพ็กเกจเครดิตสำหรับโปรแกรมโพสต์ออโต้ Twitter ของคุณ" />
 </svelte:head>
 
 <div class="container py-5">

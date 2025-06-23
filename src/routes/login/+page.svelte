@@ -43,6 +43,11 @@
   });
 </script>
 
+<svelte:head>
+  <title>เข้าสู่ระบบ - iMaster</title>
+  <meta name="description" content="เข้าสู่ระบบเพื่อจัดการโปรแกรมโพสต์ออโต้ Twitter ของคุณ" />
+</svelte:head>
+
 <div class="container mt-5" style="max-width: 400px;">
   <h2>Login</h2>
   <form on:submit={onSubmit} novalidate>

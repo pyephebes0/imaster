@@ -1,3 +1,8 @@
+<svelte:head>
+  <title>iMaster - โปรแกรมโพสต์ออโต้ Twitter</title>
+  <meta name="description" content="โปรแกรมโพสต์ออโต้ Twitter ช่วยให้คุณจัดการโพสต์ได้ง่ายและรวดเร็ว" />
+</svelte:head>
+
 <main>
   <h1>ยินดีต้อนรับสู่ iMaster</h1>
   <p>โปรแกรมโพสต์ออโต้ Twitter ที่ช่วยให้คุณจัดการโพสต์ได้ง่ายและรวดเร็ว</p>
