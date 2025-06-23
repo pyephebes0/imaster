@@ -75,5 +75,9 @@
 		<button class="btn btn-success w-100" type="submit" disabled={loading}>
 			{#if loading}Signing up...{:else}Sign Up{/if}
 		</button>
+		<!-- ข้อความและลิงก์เข้าสู่ระบบ -->
+		<div class="text-center mt-3">
+			<small>มีบัญชีอยู่แล้ว? <a href="/login">เข้าสู่ระบบ</a></small>
+		</div>
 	</form>
 </div>
