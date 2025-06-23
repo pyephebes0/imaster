@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { connectDB } from '$lib/server/db';
 import { Post } from '$lib/server/models/Post';
 
@@ -6,7 +7,7 @@ export async function POST({ request }) {
     console.log('Cron job triggered at', new Date().toISOString());
 
     const body = await request.json();
-    const { postId } = body;
+    const postId = body.postId;
 
     if (!postId) {
       return new Response(JSON.stringify({ error: 'Missing postId' }), { status: 400 });
@@ -14,7 +15,13 @@ export async function POST({ request }) {
 
     await connectDB();
 
-    const post = await Post.findOne({ postId }).lean();
+    // แปลง postId (string) เป็น ObjectId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return new Response(JSON.stringify({ error: 'Invalid postId format' }), { status: 400 });
+    }
+    const objectId = new mongoose.Types.ObjectId(postId);
+
+    const post = await Post.findOne({ _id: objectId }).lean();
 
     if (!post) {
       return new Response(JSON.stringify({ error: 'Post not found' }), { status: 404 });
