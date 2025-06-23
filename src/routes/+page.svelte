@@ -93,4 +93,9 @@
     transform: translateY(-3px);
     border-color: #2563eb;
   }
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
 </style>
