@@ -75,8 +75,14 @@
       </div>
     {/if}
 
-    <button class="btn btn-primary" type="submit" disabled={loading}>
+    <button class="btn btn-primary w-100" type="submit" disabled={loading}>
       {#if loading}Logging in...{:else}Login{/if}
     </button>
+
+    <!-- ลิงก์สมัครสมาชิกและดูแพ็กเกจราคา -->
+    <div class="text-center mt-3">
+      <small>ยังไม่มีบัญชี? <a href="/signup">สมัครสมาชิก</a></small><br />
+      <small>หรือ <a href="/pricing">ดูแพ็กเกจราคา</a> ก่อนเข้าสู่ระบบ</small>
+    </div>
   </form>
 </div>

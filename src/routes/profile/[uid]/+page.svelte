@@ -81,6 +81,13 @@
   <p><strong>Username:</strong> {user.username}</p>
   <p><strong>Email:</strong> {user.email}</p>
 
+  <!-- ลิงก์ไปหน้าแพ็กเกจราคา -->
+  <a href="/pricing" class="btn btn-info my-3 d-inline-block">
+    💳 ซื้อแพ็กเกจเครดิต
+  </a>
+
+  <br />
+
   <a href="/logout" class="logout">Logout</a>
 </main>
 

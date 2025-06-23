@@ -75,9 +75,11 @@
 		<button class="btn btn-success w-100" type="submit" disabled={loading}>
 			{#if loading}Signing up...{:else}Sign Up{/if}
 		</button>
-		<!-- ข้อความและลิงก์เข้าสู่ระบบ -->
+
+		<!-- ข้อความและลิงก์เข้าสู่ระบบ และดูแพ็กเกจราคา -->
 		<div class="text-center mt-3">
-			<small>มีบัญชีอยู่แล้ว? <a href="/login">เข้าสู่ระบบ</a></small>
+			<small>มีบัญชีอยู่แล้ว? <a href="/login">เข้าสู่ระบบ</a></small><br />
+			<small>หรือ <a href="/pricing">ดูแพ็กเกจราคา</a> ก่อนสมัคร</small>
 		</div>
 	</form>
 </div>
