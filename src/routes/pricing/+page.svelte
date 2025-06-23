@@ -9,7 +9,7 @@
 			recommended: true
 		},
 		{
-			name: 'เล็ก',
+			name: 'ประหยัด',
 			price: 99,
 			credits: 120,
 			days: 'ประมาณ 7 วัน',
@@ -17,12 +17,12 @@
 			recommended: true
 		},
 		{
-			name: 'กลาง',
+			name: 'คุ้มค่า',
 			price: 199,
 			credits: 260,
 			days: 'ประมาณ 15 วัน',
 			postsPerDay: '17 โพสต์/วัน',
-			recommended: false
+			recommended: true
 		}
 	];
 
@@ -36,10 +36,6 @@
 
 <svelte:head>
 	<title>เลือกแพ็กเกจ</title>
-	<link
-		rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	/>
 </svelte:head>
 
 <div class="container py-5">
