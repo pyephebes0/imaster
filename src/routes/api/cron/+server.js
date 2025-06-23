@@ -1,6 +1,6 @@
 import { connectDB } from '$lib/server/db';
 import { authUser } from '$lib/server/auth';
-import { Post } from '$lib/server/models/post';
+import { Post } from '$lib/server/models/Post';
 
 export async function GET({ request }) {
   try {
