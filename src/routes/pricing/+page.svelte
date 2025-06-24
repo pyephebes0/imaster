@@ -8,35 +8,35 @@
 			bonus: ''
 		},
 		{
-			name: '🔵 เล็ก',
+			name: '🔵 ประหยัด',
 			price: 99,
 			credits: 30,
 			maxAccounts: 6,
 			bonus: ''
 		},
 		{
-			name: '🟠 กลาง',
+			name: '🟠 คุ้มค่า',
 			price: 199,
 			credits: 60,
 			maxAccounts: 12,
 			bonus: ''
 		},
 		{
-			name: '🟣 ใหญ่',
+			name: '🟣 มืออาชีพ',
 			price: 299,
 			credits: 100,
 			maxAccounts: 20,
 			bonus: ''
 		},
 		{
-			name: '🟤 โปรหนัก',
+			name: '🟤 สายยิง',
 			price: 499,
 			credits: 200,
 			maxAccounts: 40,
 			bonus: '⭐️ ฟรี +1 บัญชี'
 		},
 		{
-			name: '⚫️ โปรสุด',
+			name: '⚫️ เอเจนซี่',
 			price: 999,
 			credits: 250,
 			maxAccounts: 50,
