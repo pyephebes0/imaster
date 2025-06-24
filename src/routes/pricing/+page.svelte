@@ -19,7 +19,8 @@
 			price: 199,
 			credits: 60,
 			maxAccounts: 12,
-			bonus: ''
+			bonus: '',
+			recommended: true
 		},
 		{
 			name: '🟣 มืออาชีพ',
@@ -56,6 +57,11 @@
 		name="description"
 		content="ซื้อเครดิตเพื่อเชื่อมบัญชี Twitter และใช้งานโปรแกรมโพสต์อัตโนมัติ"
 	/>
+	<!-- ใส่ Bootstrap CDN ถ้ายังไม่มี -->
+	<link
+		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+		rel="stylesheet"
+	/>
 </svelte:head>
 
 <div class="container py-5">
@@ -68,8 +74,16 @@
 	<div class="row justify-content-center">
 		{#each packages as pkg}
 			<div class="col-md-4 col-sm-6 mb-4">
-				<div class="card h-100 border-{pkg.recommended ? 'primary' : 'secondary'} shadow">
-					<div class="card-header text-center text-white bg-{pkg.recommended ? 'primary' : 'dark'}">
+				<div
+					class="card h-100 shadow"
+					class:border-primary={pkg.recommended}
+					class:border-secondary={!pkg.recommended}
+				>
+					<div
+						class="card-header text-center text-white"
+						class:bg-primary={pkg.recommended}
+						class:bg-dark={!pkg.recommended}
+					>
 						<h4>{pkg.name}</h4>
 					</div>
 					<div class="card-body text-center">
