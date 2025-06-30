@@ -234,8 +234,7 @@
 			<label for="selectTime">เลือกระยะเวลา:</label>
 			<select id="selectTime" bind:value={selectTime} required class="form-select mb-3">
 				<option value="0">เลือกระยะเวลา</option>
-				<option value="60" selected>1 นาที</option>
-				<!-- <option value="600" selected>10 นาที</option> -->
+				<option value="600" selected>10 นาที</option>
 				<option value="1200">20 นาที</option>
 				<option value="1800">30 นาที</option>
 				<option value="2400">40 นาที</option>
