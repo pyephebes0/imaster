@@ -1,15 +1,20 @@
 // src/hooks.server.js
 import { verifyToken } from '$lib/server/auth';
-import { connectDB } from '$lib/server/db.js';
+import { connectDB } from '$lib/server/db';
+import { connection } from '$lib/server/redisConnection'; // <-- เพิ่มบรรทัดนี้
+
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 export async function handle({ event, resolve }) {
-  // 1. รอให้เชื่อมต่อฐานข้อมูลก่อนทุกครั้ง
+  // เชื่อมต่อฐานข้อมูล
   await connectDB();
 
-  // 2. ดึง JWT จาก cookie
+   // -- Redis connection จะเชื่อมต่อและ log ตอน import ไฟล์นี้ --
+  // ถ้าต้องการทดสอบ set/get เพิ่มใน redisConnection.js ได้เลย
+
+  // ดึง JWT จาก cookie
   const token = event.cookies.get('jwt');
 
   if (token) {

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	let text = ''; // ข้อความใน textarea
-	let selectTime = '30'; // เลือกระยะเวลาเริ่มต้น
+	let selectTime = '0'; // เลือกระยะเวลาเริ่มต้น
 	let imageFile = null; // เก็บไฟล์รูปภาพ
 
 	let loading = false; // สำหรับตอนโพสต์
@@ -11,6 +11,7 @@
 	let error = '';
 	let posted = false;
 	let previewProcessing = true;
+	let showSpinner = false;
 
 	const baseUrl = import.meta.env.VITE_BASE_URL;
 	let accounts = [];
@@ -52,10 +53,13 @@
 					preview = post;
 					posted = true;
 					text = post.content || '';
-					selectTime = post.duration || '30';
+					selectTime = post.duration?.toString() || '1800';
+					// เช็คสถานะ
+					showSpinner = post.status === 'posted';
 				} else {
 					preview = null;
 					posted = false;
+					showSpinner = false;
 				}
 			} else if (res.status === 204) {
 				preview = null;
@@ -113,8 +117,14 @@
 
 		const formData = new FormData();
 		formData.append('content', text);
-		formData.append('duration', selectTime);
-		if (imageFile) formData.append('image', imageFile);
+
+		// แปลง selectTime (วินาที) เป็นนาที
+		const durationInMinutes = parseInt(selectTime) / 60;
+		formData.append('duration', durationInMinutes.toString());
+
+		if (imageFile) {
+			formData.append('image', imageFile);
+		}
 
 		try {
 			const res = await fetch('/api/post', {
@@ -122,24 +132,43 @@
 				body: formData,
 				credentials: 'include'
 			});
+
 			if (!res.ok) {
 				error = await res.text();
 			} else {
 				preview = await res.json();
 				posted = true;
+				showSpinner = true;
 			}
 		} catch (e) {
 			error = 'เกิดข้อผิดพลาดระหว่างการส่งโพสต์';
 		}
+
 		loading = false;
 	}
 
-	function cancelPost() {
+	async function cancelPost() {
 		text = '';
-		selectTime = '30';
+		selectTime = '1800';
 		imageFile = null;
 		preview = null;
 		posted = false;
+		showSpinner = false;
+
+		try {
+			const res = await fetch('/api/queue/cancel', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			});
+			const data = await res.json();
+			if (data.success) {
+				console.log(`ลบ job สำเร็จ ${data.removedJobs} งาน`);
+			} else {
+				console.warn('ลบ job ไม่สำเร็จ:', data.error);
+			}
+		} catch (error) {
+			console.error('เกิดข้อผิดพลาดในการลบ job:', error);
+		}
 	}
 
 	onMount(() => {
@@ -156,13 +185,11 @@
 </script>
 
 <main>
-	<h1>จัดการบัญชี Twitter ของคุณ</h1>
-
-	{#if posted}
-		<button class="btn btn-danger mb-3" on:click={cancelPost}>โพสต์ใหม่</button>
+	<h1>สร้างโพสต์</h1>
+	{#if showSpinner}
 		<div class="preview-box border p-4 rounded bg-light position-relative">
 			<!-- Spinner Overlay ขณะประมวลผล -->
-			{#if previewProcessing}
+			{#if showSpinner}
 				<div class="overlay-spinner d-flex justify-content-center align-items-center">
 					<div class="text-center">
 						<div
@@ -176,16 +203,18 @@
 			{/if}
 
 			<!-- ข้อมูลพรีวิว -->
-			<h4>🎉 โพสต์ของคุณ</h4>
-			<p><strong>ข้อความ:</strong> {preview.content}</p>
-			<p><strong>ระยะเวลา:</strong> {preview.duration} วินาที</p>
-			{#if preview.imageUrl}
-				<img
-					src={preview.imageUrl}
-					alt="รูปภาพ"
-					class="img-fluid mt-2"
-					style="max-width: 280px; max-height: 280px;"
-				/>
+			{#if preview}
+				<h4>🎉 โพสต์ของคุณ</h4>
+				<p><strong>ข้อความ:</strong> {preview.content}</p>
+				<p><strong>ระยะเวลา:</strong> {preview.duration} วินาที</p>
+				{#if preview.imageUrl}
+					<img
+						src={preview.imageUrl}
+						alt="รูปภาพ"
+						class="img-fluid mt-2"
+						style="max-width: 280px; max-height: 280px;"
+					/>
+				{/if}
 			{/if}
 		</div>
 	{:else}
@@ -204,9 +233,12 @@
 
 			<label for="selectTime">เลือกระยะเวลา:</label>
 			<select id="selectTime" bind:value={selectTime} required class="form-select mb-3">
-				<option value="30">30 วินาที</option>
-				<option value="60">1 นาที</option>
-				<option value="180">3 นาที</option>
+				<option value="0">เลือกระยะเวลา</option>
+				<option value="60" selected>1 นาที</option>
+				<!-- <option value="600" selected>10 นาที</option> -->
+				<option value="1200">20 นาที</option>
+				<option value="1800">30 นาที</option>
+				<option value="2400">40 นาที</option>
 			</select>
 
 			<label for="imageInput">เลือกรูปภาพ:</label>
@@ -218,24 +250,35 @@
 				class="form-control mb-3"
 			/>
 
-			<button type="submit" class="btn btn-success mb-4" disabled={text.length === 0 || loading}>
+			<button
+				type="submit"
+				class="btn btn-success mb-4 btn-lg"
+				disabled={text.length === 0 || loading}
+			>
 				{#if loading}
 					<span class="spinner-border spinner-border-sm me-2"></span> กำลังโพสต์...
 				{:else}
 					โพสต์
 				{/if}
 			</button>
-
 			{#if error}
 				<p class="text-danger mt-2">{error}</p>
 			{/if}
 		</form>
 	{/if}
+	{#if showSpinner}
+		<button
+			class="btn btn-danger mb-4 btn-lg"
+			on:click={cancelPost}
+			style="margin-top: 10px !important;">หยุด</button
+		>
+	{/if}
+</main>
 
-	<button class="btn btn-primary mb-4" on:click={connectTwitter} style="margin-top: 2rem;">
+<main>
+	<button class="btn btn-primary mb-4 btn-lg" on:click={connectTwitter}>
 		<i class="bi bi-twitter me-2"></i> เชื่อมบัญชี Twitter ใหม่
 	</button>
-
 	<h2>บัญชีที่เชื่อมไว้</h2>
 	<ul class="list-group">
 		{#if accounts.length === 0}
@@ -327,7 +370,8 @@
 	}
 
 	button.btn-primary,
-	button.btn-success {
+	button.btn-success,
+	button.btn-danger {
 		width: 100%;
 	}
 
@@ -351,6 +395,10 @@
 	}
 
 	form {
-		margin-bottom: 3rem;
+		margin-bottom: 0rem !important;
+	}
+
+	.mb-4 {
+		margin-bottom: unset !important;
 	}
 </style>

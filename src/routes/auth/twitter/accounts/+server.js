@@ -1,4 +1,4 @@
-// src/routes/twitter/accounts/+server.js
+// src/routes/auth/twitter/accounts/+server.js
 import { TwitterAccount } from '$lib/server/db.js';
 
 export async function GET({ locals }) {

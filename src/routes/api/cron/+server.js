@@ -1,35 +1,54 @@
-import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 import { connectDB } from '$lib/server/db';
-import { Post } from '$lib/server/models/Post';
+import { User } from '$lib/server/db';
+import { Post } from '$lib/server/models/Post'; // สมมุติว่า Post เก็บ userId
 
 export async function POST({ request }) {
   try {
-    console.log('Cron job triggered at', new Date().toISOString());
+    console.log('Admin check triggered at', new Date().toISOString());
 
     const body = await request.json();
-    const postId = body.postId;
+    const { admin, password, username } = body;
 
-    if (!postId) {
-      return new Response(JSON.stringify({ error: 'Missing postId' }), { status: 400 });
+    if (!admin || !password || !username) {
+      return new Response(JSON.stringify({ error: 'Missing admin, password or username' }), { status: 400 });
     }
 
     await connectDB();
 
-    // แปลง postId (string) เป็น ObjectId
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return new Response(JSON.stringify({ error: 'Invalid postId format' }), { status: 400 });
+    // เช็ค admin
+    const adminUser = await User.findOne({ username: admin }).lean();
+    if (!adminUser) {
+      return new Response(JSON.stringify({ error: 'Admin user not found' }), { status: 404 });
     }
-    const objectId = new mongoose.Types.ObjectId(postId);
 
-    const post = await Post.findOne({ _id: objectId }).lean();
-
-    if (!post) {
-      return new Response(JSON.stringify({ error: 'Post not found' }), { status: 404 });
+    // เช็ค password admin
+    const passwordMatch = await bcrypt.compare(password, adminUser.password);
+    if (!passwordMatch) {
+      return new Response(JSON.stringify({ error: 'Invalid admin password' }), { status: 401 });
     }
+
+    // เช็ค isAdmin จริงไหม
+    if (!adminUser.isAdmin) {
+      return new Response(JSON.stringify({ error: 'User is not admin' }), { status: 403 });
+    }
+
+    // ดึง user ปกติจาก username
+    const normalUser = await User.findOne({ username, isAdmin: { $ne: true } }).lean();
+    if (!normalUser) {
+      return new Response(JSON.stringify({ error: 'User not found or is admin' }), { status: 404 });
+    }
+
+    // ดึงโพสต์ทั้งหมดของ user นี้ (ถ้าเก็บ userId)
+    const posts = await Post.find({ userId: normalUser._id }).lean();
+
+    // ตัด password ออกก่อนส่งกลับ
+    const { password: _, ...userWithoutPassword } = normalUser;
 
     return new Response(
       JSON.stringify({
         status: 'success',
+        posts
       }),
       {
         status: 200,
@@ -37,7 +56,7 @@ export async function POST({ request }) {
       }
     );
   } catch (error) {
-    console.error('Error in cron job:', error);
+    console.error('Error:', error);
     return new Response(
       JSON.stringify({ status: 'error', message: error.message }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
