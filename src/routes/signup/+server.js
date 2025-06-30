@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-// import { User } from '$lib/server/db';
+import { User } from '$lib/server/db';
 import bcrypt from 'bcryptjs';
 
 export async function POST({ request }) {
@@ -21,10 +21,10 @@ export async function POST({ request }) {
   }
 
   // ✅ ตรวจสอบซ้ำว่า username หรือ email ซ้ำ
-  // const exists = await User.findOne({ $or: [{ username }, { email }] });
-  // if (exists) {
-  //   return new Response('Username or email already exists.', { status: 400 });
-  // }
+  const exists = await User.findOne({ $or: [{ username }, { email }] });
+  if (exists) {
+    return new Response('Username or email already exists.', { status: 400 });
+  }
 
   // ✅ เข้ารหัสและบันทึกลงฐานข้อมูล
   const hash = await bcrypt.hash(password, 10);

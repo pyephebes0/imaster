@@ -1,11 +1,11 @@
 import { json } from '@sveltejs/kit';
-// import { User } from '$lib/server/db';
+import { User } from '$lib/server/db';
 import bcrypt from 'bcryptjs';
 import { createToken } from '$lib/server/auth';
 
 export async function POST({ request, cookies }) {
   const { username, password } = await request.json();
-  // const user = await User.findOne({ username });
+  const user = await User.findOne({ username });
   if (!user) return new Response('Invalid username', { status: 401 });
 
   const match = await bcrypt.compare(password, user.password);
