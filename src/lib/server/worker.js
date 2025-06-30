@@ -1,11 +1,11 @@
 // src/lib/server/worker.js
 import { Worker } from 'bullmq';
 import { connection } from './redisConnection.js';
-import { connectDB } from '../../../worker/db.js';
+// import { connectDB } from '../../../worker/db.js';
 import { tweetToTwitterAccount } from './twitter-api/twitterClient.js';
-import { PostLog } from './models/PostLog.js';
+// import { PostLog } from './models/PostLog.js';
 import { getTwitterAccountsByUserId } from './models/TwitterAccount.js';
-import { Post } from './models/Post.js';
+// import { Post } from './models/Post.js';
 
 console.log('👷‍♂️ [INIT] worker.js started');
 
