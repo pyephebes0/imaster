@@ -3,7 +3,7 @@ import { postQueue } from '$lib/server/queue';
 import { json } from '@sveltejs/kit';
 import { authUser } from '$lib/server/auth';
 import { Post } from '$lib/server/models/Post.js';  // import model Post ของคุณ
-import { connection } from '$lib/server/lib/redisConnection.js'; // import redis client
+import { connection } from '$lib/server/redisConnection.js'; // import redis client
 
 export async function POST({ request }) {
   const user = await authUser(request);
