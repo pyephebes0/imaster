@@ -1,5 +1,5 @@
 // src/routes/auth/twitter/accounts/+server.js
-// import { TwitterAccount } from '$lib/server/db.js';
+import { TwitterAccount } from '$lib/server/db.js';
 
 export async function GET({ locals }) {
   const userId = locals.user?.id;
