@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 import { Post } from '$lib/server/models/Post';
 import { authUser } from '$lib/server/auth';
 import { uploadImage } from '$lib/server/upload';
-import { connection } from '$lib/server/lib/redisConnection.js'; // เชื่อม Redis
+import { connection } from '$lib/server/redisConnection.js'; // เชื่อม Redis
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
