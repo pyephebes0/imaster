@@ -1,5 +1,5 @@
 // src/routes/twitter/account/[twitterId]/+server.js
-import { TwitterAccount } from '$lib/server/db.js';
+// import { TwitterAccount } from '$lib/server/db.js';
 
 export async function DELETE({ params, locals }) {
   const userId = locals.user?.id;
