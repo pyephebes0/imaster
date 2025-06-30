@@ -2,7 +2,7 @@
 import { postQueue } from '$lib/server/queue';
 import { json } from '@sveltejs/kit';
 import { authUser } from '$lib/server/auth';
-// import { Post } from '$lib/server/models/Post.js';  // import model Post ของคุณ
+import { Post } from '$lib/server/models/Post.js';  // import model Post ของคุณ
 
 export async function POST({ request }) {
   const user = await authUser(request);

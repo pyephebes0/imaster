@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-// import { Post } from '$lib/server/models/Post';
+import { Post } from '$lib/server/models/Post';
 import { authUser } from '$lib/server/auth';
 
 /** @type {import('./$types').RequestHandler} */
