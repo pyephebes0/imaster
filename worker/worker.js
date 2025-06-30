@@ -1,4 +1,4 @@
 // scripts/worker.js
-import '../src/lib/server/worker.js';
+import '/sveltekit-app/src/lib/server/worker';
 
 console.log('🚀 Worker process started...');
