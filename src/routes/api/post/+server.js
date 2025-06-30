@@ -14,6 +14,9 @@ export async function POST({ request }) {
 			return new Response('Unauthorized', { status: 401 });
 		}
 
+		// ลบ flag หยุด (หรือ set เป็น false) ทุกครั้งเมื่อเริ่มโพสต์ใหม่
+    await connection.del(`stop:${user._id.toString()}`);
+
     const formData = await request.formData();
 		const content = formData.get('content');
 		const duration = formData.get('duration');
