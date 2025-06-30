@@ -1,6 +1,6 @@
 import cron from 'node-cron';
-import { connectDB } from './db';
-import { Post } from '$lib/server/models/Post.js';
+// import { connectDB } from './db';
+// import { Post } from '$lib/server/models/Post.js';
 import { getTwitterAccountsByUserId } from '$lib/server/models/TwitterAccount.js';
 import { PostLog } from '$lib/server/models/PostLog.js';
 import { tweetToTwitterAccount } from '$lib/server/twitter-api/twitterClient';

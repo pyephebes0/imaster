@@ -1,7 +1,7 @@
 // src\routes\api\post\+server.js
 import { postQueue } from '$lib/server/queue';  // import queue ที่คุณตั้งไว้
 import { json } from '@sveltejs/kit';
-import { Post } from '$lib/server/models/Post';
+// import { Post } from '$lib/server/models/Post';
 import { authUser } from '$lib/server/auth';
 import { uploadImage } from '$lib/server/upload';
 

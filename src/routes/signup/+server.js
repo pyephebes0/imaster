@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { User } from '$lib/server/db';
+// import { User } from '$lib/server/db';
 import bcrypt from 'bcryptjs';
 
 export async function POST({ request }) {

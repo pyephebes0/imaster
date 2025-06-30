@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import { connectDB } from '$lib/server/db';
-import { User } from '$lib/server/db';
-import { Post } from '$lib/server/models/Post'; // สมมุติว่า Post เก็บ userId
+// import { connectDB } from '$lib/server/db';
+// import { User } from '$lib/server/db';
+// import { Post } from '$lib/server/models/Post'; // สมมุติว่า Post เก็บ userId
 
 export async function POST({ request }) {
   try {

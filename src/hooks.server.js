@@ -1,6 +1,6 @@
 // src/hooks.server.js
 import { verifyToken } from '$lib/server/auth';
-import { connectDB } from '$lib/server/db';
+// import { connectDB } from '$lib/server/db';
 import { connection } from '$lib/server/redisConnection'; // <-- เพิ่มบรรทัดนี้
 
 import dotenv from 'dotenv';

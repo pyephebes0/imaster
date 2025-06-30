@@ -1,5 +1,5 @@
 import { verifyToken } from '$lib/server/auth';
-import { User } from '$lib/server/db';
+// import { User } from '$lib/server/db';
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ cookies, params }) {
