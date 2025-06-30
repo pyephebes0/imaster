@@ -1,7 +1,7 @@
 import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
-// import { ObjectId } from 'mongoose';
-// import { connectDB, TwitterAccount } from '$lib/server/db.js';
+import { ObjectId } from 'mongoose';
+import { connectDB, TwitterAccount } from '$lib/server/db.js';
 
 dotenv.config();
 
