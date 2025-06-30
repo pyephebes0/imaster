@@ -9,7 +9,7 @@ dotenv.config();
 
 export async function handle({ event, resolve }) {
   // เชื่อมต่อฐานข้อมูล
-  await connectDB();
+  // await connectDB();
 
    // -- Redis connection จะเชื่อมต่อและ log ตอน import ไฟล์นี้ --
   // ถ้าต้องการทดสอบ set/get เพิ่มใน redisConnection.js ได้เลย
