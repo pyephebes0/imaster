@@ -3,12 +3,16 @@ import { postQueue } from '$lib/server/queue';
 import { json } from '@sveltejs/kit';
 import { authUser } from '$lib/server/auth';
 import { Post } from '$lib/server/models/Post.js';  // import model Post ของคุณ
+import { connection } from '$lib/server/lib/redisConnection.js'; // import redis client
 
 export async function POST({ request }) {
   const user = await authUser(request);
   if (!user) return new Response('Unauthorized', { status: 401 });
 
   try {
+    // ตั้ง flag หยุด loop ใน Redis
+    await connection.set(`stop:${user._id.toString()}`, 'true');
+
     // ลบ job ที่ค้างอยู่ของ user
     const jobs = await postQueue.getJobs(['waiting', 'delayed']);
     const userJobs = jobs.filter(job => job.data.userId === user._id.toString());
