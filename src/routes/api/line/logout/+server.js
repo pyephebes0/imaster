@@ -1,11 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 
-export async function GET({ cookies }) {
+export async function POST({ cookies }) {
   // ลบ cookie JWT
   cookies.delete('jwt', { path: '/' });
-
-  cookies.delete('jwt_line', { path: '/' });
-
-  // redirect ไปที่ /login
+  cookies.delete('user', { path: '/' });
   throw redirect(302, '/login');
 }

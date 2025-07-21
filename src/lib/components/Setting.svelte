@@ -206,7 +206,7 @@
 			{#if preview}
 				<h4>🎉 โพสต์ของคุณ</h4>
 				<p><strong>ข้อความ:</strong> {preview.content}</p>
-				<p><strong>ระยะเวลา:</strong> {preview.duration} วินาที</p>
+				<p><strong>ระยะเวลา:</strong> {preview.duration} นาที</p>
 				{#if preview.imageUrl}
 					<img
 						src={preview.imageUrl}

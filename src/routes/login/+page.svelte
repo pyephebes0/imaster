@@ -6,6 +6,16 @@
   let loading = false;
   let error = '';
 
+  const LINE_CHANNEL_ID = import.meta.env.VITE_LINE_CHANNEL_ID;
+  const REDIRECT_URI = import.meta.env.VITE_LINE_REDIRECT_URI;
+  const state = crypto.randomUUID();
+
+  function loginWithLine() {
+    const scope = encodeURIComponent('profile openid email');
+    const url = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CHANNEL_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}&scope=${scope}`;
+    window.location.href = url;
+  }
+  
   async function login() {
     if (loading) return;
     error = '';
@@ -82,6 +92,16 @@
 
     <button class="btn btn-primary w-100" type="submit" disabled={loading}>
       {#if loading}Logging in...{:else}Login{/if}
+    </button>
+
+    <!-- ปุ่ม Login ด้วย LINE -->
+    <button
+      type="button"
+      class="btn btn-success w-100 mt-2"
+      on:click={loginWithLine}
+    >
+      <img src="/line-logo.svg" alt="LINE" style="height: 20px; margin-right: 8px;" />
+      Login ด้วย LINE
     </button>
 
     <!-- ลิงก์สมัครสมาชิกและดูแพ็กเกจราคา -->

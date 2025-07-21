@@ -49,7 +49,7 @@ export async function POST({ request }) {
       existingPost.duration = duration;
       existingPost.imageUrl = imageUrl;
       existingPost.status = 'posted';
-      existingPost.updatedAt = new Date();
+      existingPost.lastPostedAt = new Date();
       
       post = await existingPost.save();
 
