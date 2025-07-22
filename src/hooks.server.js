@@ -15,16 +15,22 @@ export async function handle({ event, resolve }) {
   // ถ้าต้องการทดสอบ set/get เพิ่มใน redisConnection.js ได้เลย
 
   // ดึง JWT จาก cookie
-  const token = event.cookies.get('jwt');
+  const jwtNormal = event.cookies.get('jwt');
+  const jwtLine = event.cookies.get('jwt_line');
 
-  if (token) {
+  if (jwtNormal) {
     try {
-      // 3. verify token และเซ็ต locals.user
-      const payload = verifyToken(token);
-      event.locals.user = { id: payload.id };
+      const payload = verifyToken(jwtNormal);
+      event.locals.user = { id: payload.id, source: 'normal' };
     } catch (err) {
-      console.warn('Invalid token', err);
-      // ไม่เซ็ต user ถ้า token ผิดพลาด
+      console.warn('Invalid jwt token', err);
+    }
+  } else if (jwtLine) {
+    try {
+      const payload = verifyToken(jwtLine);
+      event.locals.user = { id: payload.id, source: 'line' };
+    } catch (err) {
+      console.warn('Invalid jwt_line token', err);
     }
   }
 
