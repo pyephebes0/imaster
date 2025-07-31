@@ -26,11 +26,11 @@ package-copy.json
 *.png
 *.webp
 
-# ignore ทุกไฟล์ใน uploads
-static/uploads/*
+# Ignore all files in static/uploads
+/static/uploads/*
 
-# ไม่ ignore ไฟล์ .png ใน uploads
-!static/uploads/*.png
+# Except the .gitkeep file so folderจะถูก track
+!/static/uploads/.gitkeep
 
 # ✅ ยกเลิก ignore ของ static (เพื่อ track ไฟล์อื่นใน static/)
 !static/
