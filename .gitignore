@@ -27,3 +27,14 @@ package-copy.json
 *.webp
 
 static/uploads/
+
+# ✅ ยกเลิก ignore ของ static (เพื่อ track ไฟล์อื่นใน static/)
+!static/
+
+# ✅ ยกเลิก ignore ของไฟล์ใน static ทั้งหมดยกเว้น uploads/
+!static/*.png
+!static/*.jpg
+!static/*.webp
+!static/*.jpeg
+!static/*.svg
+!static/*.gif
