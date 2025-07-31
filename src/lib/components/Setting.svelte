@@ -4,6 +4,7 @@
 	let text = ''; // ข้อความใน textarea
 	let selectTime = '0'; // เลือกระยะเวลาเริ่มต้น
 	let imageFile = null; // เก็บไฟล์รูปภาพ
+	let imageUrl = '';
 
 	let loading = false; // สำหรับตอนโพสต์
 	let loadingPreview = true; // สำหรับตอนโหลดโพสต์เก่า (onMount)
@@ -53,7 +54,9 @@
 					preview = post;
 					posted = true;
 					text = post.content || '';
-					selectTime = post.duration?.toString() || '1800';
+					imageUrl = post.imageUrl ? `${post.imageUrl}` : `${'no-image.jpg'}`;
+					console.log(post.imageUrl);
+					selectTime = (post.duration * 60).toString() || '1800';
 					// เช็คสถานะ
 					showSpinner = post.status === 'posted';
 				} else {
@@ -103,6 +106,7 @@
 
 	function handleFileChange(event) {
 		const files = event.target.files;
+		console.log(files);
 		if (files && files.length > 0) {
 			imageFile = files[0];
 			// คุณสามารถใช้ imageFile เพื่อส่งไปที่ server หรือแสดง preview ได้
@@ -234,20 +238,53 @@
 			<label for="selectTime">เลือกระยะเวลา:</label>
 			<select id="selectTime" bind:value={selectTime} required class="form-select mb-3">
 				<option value="0">เลือกระยะเวลา</option>
-				<option value="600" selected>10 นาที</option>
+				<option value="600">10 นาที</option>
 				<option value="1200">20 นาที</option>
 				<option value="1800">30 นาที</option>
 				<option value="2400">40 นาที</option>
 			</select>
 
-			<label for="imageInput">เลือกรูปภาพ:</label>
-			<input
-				id="imageInput"
-				type="file"
-				accept="image/*"
-				on:change={handleFileChange}
-				class="form-control mb-3"
-			/>
+			<div class="d-flex align-items-center justify-content-between mb-3">
+				{#if imageUrl}
+					<img
+						src={imageUrl}
+						alt="รูปภาพ"
+						class="img-thumbnail"
+						style="max-width: 200px; max-height: 200px;"
+					/>
+				{:else}
+					<div style="width:200px; height:200px; background:#eee; border-radius: .25rem;"></div>
+				{/if}
+
+				<label
+					for="imageInput"
+					class="btn btn-primary d-flex align-items-center gap-2 mb-0"
+					style="cursor: pointer;"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						fill="currentColor"
+						class="bi bi-upload"
+						viewBox="0 0 16 16"
+					>
+						<path
+							d="M.5 9.9a.5.5 0 0 1 .5-.5h3.6a.5.5 0 0 1 .35.15l.65.65V5.5a.5.5 0 0 1 1 0v4.7l.65-.65a.5.5 0 0 1 .35-.15h3.6a.5.5 0 0 1 0 1h-2.3l-1.65 1.65a.5.5 0 0 1-.7 0L3.3 10.4H1a.5.5 0 0 1-.5-.5z"
+						/>
+						<path d="M.5 13a.5.5 0 0 1 .5-.5H15a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z" />
+					</svg>
+					เลือกรูป
+				</label>
+
+				<input
+					type="file"
+					id="imageInput"
+					accept="image/*"
+					class="d-none"
+					on:change={handleFileChange}
+				/>
+			</div>
 
 			<button
 				type="submit"
