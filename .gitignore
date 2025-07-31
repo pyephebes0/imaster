@@ -26,9 +26,4 @@ package-copy.json
 *.png
 *.webp
 
-# Ignore everything in static/
-static/*
-
-# Except the uploads folder and its contents
-!static/uploads/
-!static/uploads/**
+static/uploads/
