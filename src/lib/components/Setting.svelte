@@ -1,5 +1,4 @@
 <script>
-	import { supabase } from '$lib/supabaseClient';
 	import { onMount } from 'svelte';
 
 	let text = ''; // ข้อความใน textarea
