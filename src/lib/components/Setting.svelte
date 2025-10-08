@@ -1,4 +1,5 @@
 <script>
+	import { supabase } from '$lib/supabaseClient';
 	import { onMount } from 'svelte';
 
 	let text = ''; // ข้อความใน textarea
@@ -104,14 +105,32 @@
 		}
 	}
 
-	function handleFileChange(event) {
+	async function handleFileChange(event) {
 		const files = event.target.files;
-		console.log(files);
 		if (files && files.length > 0) {
-			imageFile = files[0];
-			// คุณสามารถใช้ imageFile เพื่อส่งไปที่ server หรือแสดง preview ได้
-		} else {
-			imageFile = null;
+			const file = files[0];
+			const fileExt = file.name.split('.').pop();
+			const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+			const filePath = `uploads/${fileName}`;
+
+			const { data, error } = await supabase.storage.from('uploads').upload(filePath, file);
+
+			if (error) {
+				console.error('Upload failed:', error.message);
+				return;
+			}
+
+			// Get public URL if needed
+			const { publicURL, error: urlError } = supabase.storage
+				.from('uploads')
+				.getPublicUrl(filePath);
+
+			if (urlError) {
+				console.error('Get public URL failed:', urlError.message);
+				return;
+			}
+
+			console.log('Uploaded file URL:', publicURL);
 		}
 	}
 
@@ -243,48 +262,6 @@
 				<option value="1800">30 นาที</option>
 				<option value="2400">40 นาที</option>
 			</select>
-
-			<div class="d-flex align-items-center justify-content-between mb-3">
-				{#if imageUrl}
-					<img
-						src={imageUrl}
-						alt="รูปภาพ"
-						class="img-thumbnail"
-						style="max-width: 200px; max-height: 200px;"
-					/>
-				{:else}
-					<div style="width:200px; height:200px; background:#eee; border-radius: .25rem;"></div>
-				{/if}
-
-				<label
-					for="imageInput"
-					class="btn btn-primary d-flex align-items-center gap-2 mb-0"
-					style="cursor: pointer;"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
-						fill="currentColor"
-						class="bi bi-upload"
-						viewBox="0 0 16 16"
-					>
-						<path
-							d="M.5 9.9a.5.5 0 0 1 .5-.5h3.6a.5.5 0 0 1 .35.15l.65.65V5.5a.5.5 0 0 1 1 0v4.7l.65-.65a.5.5 0 0 1 .35-.15h3.6a.5.5 0 0 1 0 1h-2.3l-1.65 1.65a.5.5 0 0 1-.7 0L3.3 10.4H1a.5.5 0 0 1-.5-.5z"
-						/>
-						<path d="M.5 13a.5.5 0 0 1 .5-.5H15a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z" />
-					</svg>
-					เลือกรูป
-				</label>
-
-				<input
-					type="file"
-					id="imageInput"
-					accept="image/*"
-					class="d-none"
-					on:change={handleFileChange}
-				/>
-			</div>
 
 			<button
 				type="submit"
